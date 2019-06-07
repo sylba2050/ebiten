@@ -1,17 +1,22 @@
 package main
 
 import (
+	"image/color"
+	"log"
+
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
 )
 
 func update(screen *ebiten.Image) error {
-	if err := ebitenutil.DebugPrint(screen, "Hello world!"); err != nil {
-		return err
+	if ebiten.IsDrawingSkipped() {
+		return nil
 	}
+	screen.Fill(color.RGBA{0xff, 0, 0, 0xff})
 	return nil
 }
 
 func main() {
-	ebiten.Run(update, 320, 240, 2, "Hello world!")
+	if err := ebiten.Run(update, 640, 480, 1, "Fill"); err != nil {
+		log.Fatal(err)
+	}
 }
