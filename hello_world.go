@@ -22,12 +22,15 @@ func update(screen *ebiten.Image) error {
 	if ebiten.IsDrawingSkipped() {
 		return nil
 	}
-	screen.DrawImage(img, nil)
+	op := &ebiten.DrawImageOptions{}
+	op.GeoM.Translate(50, 50)
+	op.GeoM.Scale(1.5, 1)
+	screen.DrawImage(img, op)
 	return nil
 }
 
 func main() {
-	if err := ebiten.Run(update, 640, 480, 1, "Render an image"); err != nil {
+	if err := ebiten.Run(update, 640, 480, 1, "Geometry Matrix"); err != nil {
 		log.Fatal(err)
 	}
 }
