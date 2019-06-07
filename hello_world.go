@@ -23,7 +23,7 @@ func update(screen *ebiten.Image) error {
 		return nil
 	}
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(50, 50)
+	op.GeoM.Translate(50, 150)
 	op.GeoM.Scale(1.5, 1)
 	screen.DrawImage(img, op)
 	return nil
