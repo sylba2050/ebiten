@@ -6,8 +6,10 @@ import (
 	"image/color"
 	_ "image/png"
 	"log"
+	"strconv"
 
 	"github.com/hajimehoshi/ebiten"
+	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/sylba2050/ebiten/images"
 )
 
@@ -56,10 +58,12 @@ func init() {
 }
 
 func update(screen *ebiten.Image) error {
+	is_click := ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft)
+	mouse_x, mouse_y := ebiten.CursorPosition()
+
 	if ebiten.IsDrawingSkipped() {
 		return nil
 	}
-
 	screen.DrawImage(field, &ebiten.DrawImageOptions{})
 
 	op := &ebiten.DrawImageOptions{}
@@ -73,13 +77,18 @@ func update(screen *ebiten.Image) error {
 		op.GeoM.Reset()
 	}
 
-	op.GeoM.Translate(0, 0)
-	screen.DrawImage(white_piece, op)
-	op.GeoM.Reset()
+	if is_click {
+		op.GeoM.Translate(0, 0)
+		screen.DrawImage(white_piece, op)
+		op.GeoM.Reset()
 
-	op.GeoM.Translate(80, 0)
-	screen.DrawImage(black_piece, op)
-	op.GeoM.Reset()
+		op.GeoM.Translate(80, 0)
+		screen.DrawImage(black_piece, op)
+		op.GeoM.Reset()
+	}
+
+	ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_x), 0, 0)
+	ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_y), 100, 0)
 
 	return nil
 }
