@@ -6,10 +6,8 @@ import (
 	"image/color"
 	_ "image/png"
 	"log"
-	"strconv"
 
 	"github.com/hajimehoshi/ebiten"
-	"github.com/hajimehoshi/ebiten/ebitenutil"
 	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/sylba2050/ebiten/images"
 )
@@ -45,7 +43,7 @@ var downright = Direction{x: 1, y: 1}
 var downleft = Direction{x: -1, y: 1}
 
 // 0: none, 1: black, 2: white
-var status [8][8]int = [8][8]int{
+var status [][]int = [][]int{
 	{0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0},
@@ -92,13 +90,33 @@ func IsCanPutWithDirection(s [][]int, x, y, turn int, d Direction) bool {
 	return false
 }
 
-func IsCanPut() {
+func IsCanPut(s [][]int, x, y, turn int) bool {
+	if IsCanPutWithDirection(s, x, y, turn, up) {
+		return true
+	}
+	if IsCanPutWithDirection(s, x, y, turn, down) {
+		return true
+	}
+	if IsCanPutWithDirection(s, x, y, turn, left) {
+		return true
+	}
+	if IsCanPutWithDirection(s, x, y, turn, right) {
+		return true
+	}
+	if IsCanPutWithDirection(s, x, y, turn, upleft) {
+		return true
+	}
+	if IsCanPutWithDirection(s, x, y, turn, upright) {
+		return true
+	}
+	if IsCanPutWithDirection(s, x, y, turn, downleft) {
+		return true
+	}
+	if IsCanPutWithDirection(s, x, y, turn, downright) {
+		return true
+	}
 
-}
-
-func Put(x, y int) {
-	var direction = Direction{}
-
+	return false
 }
 
 func init() {
@@ -178,16 +196,16 @@ func update(screen *ebiten.Image) error {
 	}
 
 	if is_click && mouse_x >= 0 && mouse_x <= WIDTH && mouse_y >= 0 && mouse_y <= HEIGHT {
-		status[mouse_y/80][mouse_x/80] = turn
-		if turn == WHITE {
-			turn = BLACK
-		} else {
-			turn = WHITE
+		if IsCanPut(status, mouse_x/80, mouse_y/80, turn) {
+
+			status[mouse_y/80][mouse_x/80] = turn
+			if turn == WHITE {
+				turn = BLACK
+			} else {
+				turn = WHITE
+			}
 		}
-		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_x), 0, 0)
-		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_x/80), 0, 10)
-		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_y), 100, 0)
-		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_y/80), 100, 10)
+
 	}
 
 	return nil
