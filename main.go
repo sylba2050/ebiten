@@ -10,6 +10,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten"
 	"github.com/hajimehoshi/ebiten/ebitenutil"
+	"github.com/hajimehoshi/ebiten/inpututil"
 	"github.com/sylba2050/ebiten/images"
 )
 
@@ -21,6 +22,7 @@ var line_h *ebiten.Image
 var line_w *ebiten.Image
 var black_piece *ebiten.Image
 var white_piece *ebiten.Image
+var turn int
 
 const (
 	BLACK = 1
@@ -72,10 +74,12 @@ func init() {
 		log.Fatal(err)
 	}
 	white_piece, _ = ebiten.NewImageFromImage(w_img, ebiten.FilterDefault)
+
+	turn = WHITE
 }
 
 func update(screen *ebiten.Image) error {
-	is_click := ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft)
+	is_click := inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft)
 	mouse_x, mouse_y := ebiten.CursorPosition()
 
 	if ebiten.IsDrawingSkipped() {
@@ -114,7 +118,12 @@ func update(screen *ebiten.Image) error {
 	}
 
 	if is_click && mouse_x >= 0 && mouse_x <= WIDTH && mouse_y >= 0 && mouse_y <= HEIGHT {
-		status[mouse_y/80][mouse_x/80] = 1
+		status[mouse_y/80][mouse_x/80] = turn
+		if turn == WHITE {
+			turn = BLACK
+		} else {
+			turn = WHITE
+		}
 		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_x), 0, 0)
 		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_x/80), 0, 10)
 		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_y), 100, 0)
