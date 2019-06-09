@@ -16,7 +16,7 @@ import (
 const WIDTH = 640
 const HEIGHT = 640
 
-var field *ebiten.Image
+var back_ground *ebiten.Image
 var line_h *ebiten.Image
 var line_w *ebiten.Image
 var black_piece *ebiten.Image
@@ -25,7 +25,7 @@ var white_piece *ebiten.Image
 func init() {
 	var err error
 
-	field, err = ebiten.NewImage(WIDTH, HEIGHT, ebiten.FilterDefault)
+	back_ground, err = ebiten.NewImage(WIDTH, HEIGHT, ebiten.FilterDefault)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,7 +40,7 @@ func init() {
 		log.Fatal(err)
 	}
 
-	field.Fill(color.RGBA{0x1A, 0xC9, 0x2E, 255})
+	back_ground.Fill(color.RGBA{0x1A, 0xC9, 0x2E, 255})
 	line_h.Fill(color.RGBA{0x00, 0x00, 0x00, 255})
 	line_w.Fill(color.RGBA{0x00, 0x00, 0x00, 255})
 
@@ -64,7 +64,8 @@ func update(screen *ebiten.Image) error {
 	if ebiten.IsDrawingSkipped() {
 		return nil
 	}
-	screen.DrawImage(field, &ebiten.DrawImageOptions{})
+
+	screen.DrawImage(back_ground, &ebiten.DrawImageOptions{})
 
 	op := &ebiten.DrawImageOptions{}
 	for i := 0; i < 7; i++ {
