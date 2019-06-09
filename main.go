@@ -43,7 +43,7 @@ var downright = Direction{x: 1, y: 1}
 var downleft = Direction{x: -1, y: 1}
 
 // 0: none, 1: black, 2: white
-var status [][]int = [][]int{
+var status [8][8]int = [8][8]int{
 	{0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0},
@@ -54,7 +54,7 @@ var status [][]int = [][]int{
 	{0, 0, 0, 0, 0, 0, 0, 0},
 }
 
-func IsCanPutWithDirection(s [][]int, x, y, turn int, d Direction) bool {
+func IsCanPutWithDirection(s [8][8]int, x, y, turn int, d Direction) bool {
 	x += d.x
 	y += d.y
 
@@ -90,7 +90,7 @@ func IsCanPutWithDirection(s [][]int, x, y, turn int, d Direction) bool {
 	return false
 }
 
-func IsCanPut(s [][]int, x, y, turn int) bool {
+func IsCanPut(s [8][8]int, x, y, turn int) bool {
 	if IsCanPutWithDirection(s, x, y, turn, up) {
 		return true
 	}
@@ -117,6 +117,52 @@ func IsCanPut(s [][]int, x, y, turn int) bool {
 	}
 
 	return false
+}
+
+func reverseWithDirection(s *[8][8]int, x, y, turn int, d Direction) {
+	for {
+		x += d.x
+		y += d.y
+
+		if x < 0 || y < 0 || x > 7 || y > 7 {
+			break
+		}
+
+		if s[y][x] == turn {
+			break
+		}
+
+		s[y][x] = turn
+	}
+
+	return
+}
+
+func reverse(s *[8][8]int, x, y, turn int) {
+	if IsCanPutWithDirection(*s, x, y, turn, up) {
+		reverseWithDirection(s, x, y, turn, up)
+	}
+	if IsCanPutWithDirection(*s, x, y, turn, down) {
+		reverseWithDirection(s, x, y, turn, down)
+	}
+	if IsCanPutWithDirection(*s, x, y, turn, left) {
+		reverseWithDirection(s, x, y, turn, left)
+	}
+	if IsCanPutWithDirection(*s, x, y, turn, right) {
+		reverseWithDirection(s, x, y, turn, right)
+	}
+	if IsCanPutWithDirection(*s, x, y, turn, upleft) {
+		reverseWithDirection(s, x, y, turn, upleft)
+	}
+	if IsCanPutWithDirection(*s, x, y, turn, upright) {
+		reverseWithDirection(s, x, y, turn, upright)
+	}
+	if IsCanPutWithDirection(*s, x, y, turn, downleft) {
+		reverseWithDirection(s, x, y, turn, downleft)
+	}
+	if IsCanPutWithDirection(*s, x, y, turn, downright) {
+		reverseWithDirection(s, x, y, turn, downright)
+	}
 }
 
 func init() {
@@ -204,6 +250,7 @@ func update(screen *ebiten.Image) error {
 			} else {
 				turn = WHITE
 			}
+			reverse(&status, mouse_x/80, mouse_y/80, turn)
 		}
 
 	}
