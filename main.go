@@ -22,6 +22,23 @@ var line_w *ebiten.Image
 var black_piece *ebiten.Image
 var white_piece *ebiten.Image
 
+const (
+	BLACK = 1
+	WHITE = 2
+)
+
+// 0: none, 1: black, 2: white
+var status [8][8]int = [8][8]int{
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, BLACK, WHITE, 0, 0, 0},
+	{0, 0, 0, WHITE, BLACK, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+}
+
 func init() {
 	var err error
 
@@ -78,18 +95,31 @@ func update(screen *ebiten.Image) error {
 		op.GeoM.Reset()
 	}
 
-	if is_click {
-		op.GeoM.Translate(0, 0)
-		screen.DrawImage(white_piece, op)
-		op.GeoM.Reset()
-
-		op.GeoM.Translate(80, 0)
-		screen.DrawImage(black_piece, op)
-		op.GeoM.Reset()
+	for j := 0; j < 8; j++ {
+		for k := 0; k < 8; k++ {
+			if status[j][k] == 0 {
+				continue
+			}
+			if status[j][k] == 1 {
+				op.GeoM.Translate(float64(k*80), float64(j*80))
+				screen.DrawImage(black_piece, op)
+				op.GeoM.Reset()
+			}
+			if status[j][k] == 2 {
+				op.GeoM.Translate(float64(k*80), float64(j*80))
+				screen.DrawImage(white_piece, op)
+				op.GeoM.Reset()
+			}
+		}
 	}
 
-	ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_x), 0, 0)
-	ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_y), 100, 0)
+	if is_click && mouse_x >= 0 && mouse_x <= WIDTH && mouse_y >= 0 && mouse_y <= HEIGHT {
+		status[mouse_y/80][mouse_x/80] = 1
+		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_x), 0, 0)
+		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_x/80), 0, 10)
+		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_y), 100, 0)
+		ebitenutil.DebugPrintAt(screen, strconv.Itoa(mouse_y/80), 100, 10)
+	}
 
 	return nil
 }
