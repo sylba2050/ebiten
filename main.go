@@ -25,9 +25,24 @@ var white_piece *ebiten.Image
 var turn int
 
 const (
+	BG    = 0
 	BLACK = 1
 	WHITE = 2
 )
+
+type Direction struct {
+	x int
+	y int
+}
+
+var up = Direction{x: 0, y: -1}
+var down = Direction{x: 0, y: 1}
+var left = Direction{x: -1, y: 0}
+var right = Direction{x: 1, y: 0}
+var upright = Direction{x: 1, y: -1}
+var upleft = Direction{x: -1, y: -1}
+var downright = Direction{x: 1, y: 1}
+var downleft = Direction{x: -1, y: 1}
 
 // 0: none, 1: black, 2: white
 var status [8][8]int = [8][8]int{
@@ -39,6 +54,51 @@ var status [8][8]int = [8][8]int{
 	{0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0},
+}
+
+func IsCanPutWithDirection(s [][]int, x, y, turn int, d Direction) bool {
+	x += d.x
+	y += d.y
+
+	if x < 0 || y < 0 || x > 7 || y > 7 {
+		return false
+	}
+
+	if s[y][x] == BG {
+		return false
+	}
+
+	if s[y][x] == turn {
+		return false
+	}
+
+	for {
+		x += d.x
+		y += d.y
+
+		if x < 0 || y < 0 || x > 7 || y > 7 {
+			break
+		}
+
+		if s[y][x] == BG {
+			return false
+		}
+
+		if s[y][x] == turn {
+			return true
+		}
+	}
+
+	return false
+}
+
+func IsCanPut() {
+
+}
+
+func Put(x, y int) {
+	var direction = Direction{}
+
 }
 
 func init() {
